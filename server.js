@@ -1,10 +1,10 @@
-import express from 'express'
-import * as dotenv from'dotenv'
-import path  from 'path';
-import { bootstrap } from './src/bootstrap.js'
-import cors from 'cors'
+import express from "express";
+import * as dotenv from "dotenv";
+import path from "path";
+import { bootstrap } from "./src/bootstrap.js";
+import cors from "cors";
 // import createInvoice from './src/utils/pdfInvoice.js';
-const app = express()
+const app = express();
 // var whitelist = ['http://example1.com/', 'http://example2.com/']
 // var corsOptions = {
 //   origin: function (origin, callback) {
@@ -30,8 +30,8 @@ const app = express()
 //       next()
 //   })
 // }
-dotenv.config({path:path.resolve('./config/.env')})
+dotenv.config({ path: path.resolve("./.env") });
 const port = +process.env.PORT;
-bootstrap(app,express)
+bootstrap(app, express);
 
-app.listen(port, () => console.log(`E_Commerce listening on port ${port}!`))
+app.listen(port, () => console.log(`E_Commerce listening on port ${port}!`));
