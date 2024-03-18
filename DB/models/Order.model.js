@@ -90,7 +90,7 @@ const orderSchema = new Schema(
 );
 
 const orderModel =
-  //mongoose.model.Order ||
+  // mongoose.model.Order ||
   model("Order", orderSchema);
 
 export default orderModel;

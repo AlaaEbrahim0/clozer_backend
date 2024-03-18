@@ -9,18 +9,17 @@ export const roles = {
 const auth = (role = Object.values) => {
   return async (req, res, next) => {
     const { authorization } = req.headers;
-    console.log("request headers are");
-    console.log(req.headers);
     if (!authorization) {
       return next(new Error("please login", { cause: 404 }));
     }
-    if (!authorization?.startsWith(process.env.BEARER_KEY)) {
-      return next(new Error("In_valid bearer key", { cause: 400 }));
-    }
-    const token = authorization.split(process.env.BEARER_KEY)[1];
-    if (!token) {
-      return next(new Error("In_valid token", { cause: 400 }));
-    }
+    // if (!authorization?.startsWith(process.env.BEARER_KEY)) {
+    //   return next(new Error("In_valid bearer key", { cause: 400 }));
+    // }
+    // const token = authorization.split(process.env.BEARER_KEY)[1];
+    // if (!token) {
+    //   return next(new Error("In_valid token", { cause: 400 }));
+    // }
+    const token = authorization.split("Bearer ")[1];
     const payload = jwt.verify(token, process.env.TOKEN_SIGNATURE);
     if (!payload?.id) {
       return next(new Error("Invalid payload", { cause: 400 }));
@@ -39,6 +38,7 @@ const auth = (role = Object.values) => {
       return next(new Error("Not authorization", { cause: 401 }));
     }
     req.user = authUser;
+    req.userId = payload.id;
     next();
   };
 };

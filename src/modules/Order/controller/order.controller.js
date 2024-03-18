@@ -17,12 +17,16 @@ export const getById = asyncHandler(async (req, res, next) => {
   return res.json({ message: "Done", order });
 });
 export const getForUser = asyncHandler(async (req, res, next) => {
-  const orderId = req.params.orderId;
-  const orders = await orderModel.find(
-    (order) => order.userId === req.body.userId
-  );
+  const orders = await orderModel.find({ userId: req.user._id });
   if (!orders) {
     return next(new Error("order not found", { cause: 404 }));
+  }
+  return res.json({ message: "Done", order: orders });
+});
+export const getAll = asyncHandler(async (req, res, next) => {
+  const orders = await orderModel.where();
+  if (!orders) {
+    return next(new Error("orders not found", { cause: 404 }));
   }
   return res.json({ message: "Done", order: orders });
 });

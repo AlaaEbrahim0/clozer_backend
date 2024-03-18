@@ -16,22 +16,22 @@ router
     orderController.createOrder
   )
   .get(
-    "/All",
+    "/orders/All",
     validation(orderValidation.tokenSchema, true),
     auth(orderEndPoint.All),
-    orderController.createOrder
+    orderController.getAll
   )
   .get(
     "/:orderId",
     validation(orderValidation.tokenSchema, true),
     auth(orderEndPoint.getById),
-    orderController.createOrder
+    orderController.getById
   )
   .get(
-    "/",
+    "/orders/myOrders",
     validation(orderValidation.tokenSchema, true),
     auth(orderEndPoint.get),
-    orderController.createOrder
+    orderController.getForUser
   )
   .patch(
     "/:orderId/canceled",
