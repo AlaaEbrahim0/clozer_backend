@@ -8,38 +8,56 @@ import express from "express";
 
 const router = Router();
 router
-	.post(
-		"/",
-		validation(orderValidation.tokenSchema, true),
-		auth(orderEndPoint.create),
-		validation(orderValidation.createOrderSchema),
-		orderController.createOrder,
-	)
-	.patch(
-		"/:orderId/canceled",
-		validation(orderValidation.tokenSchema, true),
-		auth(orderEndPoint.cancel),
-		validation(orderValidation.cancelOrderSchema),
-		orderController.cancelOrder,
-	)
-	.patch(
-		"/:orderId/rejected",
-		validation(orderValidation.tokenSchema, true),
-		auth(orderEndPoint.rejected),
-		validation(orderValidation.cancelOrderSchema),
-		orderController.rejectOrder,
-	)
-	.patch(
-		"/:orderId/delivered",
-		validation(orderValidation.tokenSchema, true),
-		auth(orderEndPoint.delivered),
-		validation(orderValidation.cancelOrderSchema),
-		orderController.deliveredOrder,
-	)
-	.post(
-		"/webhook",
-		express.raw({ type: "application/json" }),
-		orderController.webhook,
-	);
+  .post(
+    "/",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.create),
+    validation(orderValidation.createOrderSchema),
+    orderController.createOrder
+  )
+  .get(
+    "/orders/All",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.All),
+    orderController.getAll
+  )
+  .get(
+    "/:orderId",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.getById),
+    orderController.getById
+  )
+  .get(
+    "/orders/myOrders",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.get),
+    orderController.getForUser
+  )
+  .patch(
+    "/:orderId/canceled",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.cancel),
+    validation(orderValidation.cancelOrderSchema),
+    orderController.cancelOrder
+  )
+  .patch(
+    "/:orderId/rejected",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.rejected),
+    validation(orderValidation.cancelOrderSchema),
+    orderController.rejectOrder
+  )
+  .patch(
+    "/:orderId/delivered",
+    validation(orderValidation.tokenSchema, true),
+    auth(orderEndPoint.delivered),
+    validation(orderValidation.cancelOrderSchema),
+    orderController.deliveredOrder
+  )
+  .post(
+    "/webhook",
+    express.raw({ type: "application/json" }),
+    orderController.webhook
+  );
 
 export default router;
