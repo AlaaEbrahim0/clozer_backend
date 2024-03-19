@@ -9,27 +9,27 @@ import brandEndPoint from "./brand.endPoint.js";
 const router = Router();
 
 router
-	.post(
-		"/",
-		validation(brandValidation.tokenSchema, true),
-		auth(brandEndPoint.create),
-		uploadFile(fileValidation.image).single("image"),
-		validation(brandValidation.createBrandSchema),
-		brandController.createBrand,
-	)
-	.get("/", brandController.allBrand)
-	.get(
-		"/:brandId",
-		validation(brandValidation.getBrandSchema),
-		brandController.getBrand,
-	)
-	.put(
-		"/:brandId",
-		validation(brandValidation.tokenSchema, true),
-		auth(brandEndPoint.update),
-		uploadFile(fileValidation.image).single("image"),
-		validation(brandValidation.updateBrandSchema),
-		brandController.updateBrand,
-	);
+  .post(
+    "/",
+    validation(brandValidation.tokenSchema, true),
+    auth(brandEndPoint.create),
+    uploadFile(fileValidation.image).single("image"),
+    validation(brandValidation.createBrandSchema),
+    brandController.createBrand
+  )
+  .get("/", brandController.allBrand)
+  .get(
+    "/:brandId",
+    validation(brandValidation.getBrandSchema),
+    brandController.getBrand
+  )
+  .put(
+    "/:brandId",
+    validation(brandValidation.tokenSchema, true),
+    auth(brandEndPoint.update),
+    uploadFile(fileValidation.image).single("image"),
+    validation(brandValidation.updateBrandSchema),
+    brandController.updateBrand
+  );
 
 export default router;
