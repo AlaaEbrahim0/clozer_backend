@@ -116,6 +116,8 @@ export const allProducts = asyncHandler(async (req, res, next) => {
 //8-updatedBy
 export const updateProduct = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
+  console.log(req.files);
+  console.log(req.body);
   const product = await productModel.findById({ _id: productId });
   if (!product) {
     return next(new Error("Invalid product Id", { cause: 404 }));
@@ -154,7 +156,10 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
         product.discount ||
         0) /
         100;
+  // if(req.mainImage)
+  // {
 
+  // }
   if (req.files?.mainImage?.length) {
     const { secure_url, public_id } = await cloudinary.uploader.upload(
       req.files.mainImage[0].path,
@@ -170,6 +175,7 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
   }
 
   if (req.files?.subImage?.length) {
+    let subImages = [];
     for (const image of req.files.subImage) {
       const { secure_url, public_id } = await cloudinary.uploader.upload(
         image.path,
@@ -181,10 +187,19 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
       if (!secure_url) {
         return next(new Error("Image not found", { cause: 400 }));
       }
-      product.subImage.push({ secure_url, public_id });
+
+      subImages.push({ secure_url, public_id });
     }
-    req.body.subImage = product.subImage;
+    if (subImages.length > 0) {
+      let promises = [];
+      for (const image of product.subImage) {
+        promises.push(cloudinary.uploader.destroy(image.public_id));
+      }
+      await Promise.all(promises);
+      req.body.subImage = subImages;
+    }
   }
+
   req.body.updatedBy = req.user._id;
   const newProduct = await productModel.findByIdAndUpdate(
     { _id: productId },
