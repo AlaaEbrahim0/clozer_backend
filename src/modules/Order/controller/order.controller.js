@@ -185,8 +185,8 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
   if (!order) {
     return next(new Error("Order not found", { cause: 404 }));
   }
-
-  if (order.status !== "placed" && order.status !== "waitForPayment") {
+  const allowedStatuses = ["placed", "waitForPayment", "onway"];
+  if (!allowStatuses.includes(order.status)) {
     // Assuming orders can only be cancelled if they are pending
     return next(new Error("Order cannot be cancelled", { cause: 400 }));
   }
@@ -227,7 +227,8 @@ export const deliveredOrder = asyncHandler(async (req, res, next) => {
     return next(new Error("Order not found", { cause: 404 }));
   }
 
-  if (order.status !== "onway") {
+  const allowedStatuses = ["onway", "placed", "waitForPayment"];
+  if (!allowedStatuses.includes(order.status)) {
     // Assuming orders can only be cancelled if they are pending
     return next(new Error("Order  delivered", { cause: 400 }));
   }
@@ -265,7 +266,7 @@ export const rejectOrder = asyncHandler(async (req, res, next) => {
   }
 
   // Check if the order is in a state where rejection is allowed
-  const allowedStatuses = ["onway", "cancel", "delivered"]; // Add more statuses if needed
+  const allowedStatuses = ["onway", "placed", "waitForPayment"]; // Add more statuses if needed
   if (!allowedStatuses.includes(order.status)) {
     return next(new Error("Order cannot be rejected", { cause: 400 }));
   }
