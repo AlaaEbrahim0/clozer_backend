@@ -15,7 +15,7 @@ const app = express();
 //     }
 //   }
 // }
-// app.use(cors(corsOptions))
+app.use(cors());
 // if(process.env.MOOD=='dev'){
 //   app.use(cors())
 // }else{
