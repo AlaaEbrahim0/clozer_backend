@@ -13,7 +13,7 @@ router
 		"/",
 validation(couponValidation.tokenSchema,true),
 		auth(couponEndPoint.create),
-		uploadFile(fileValidation.image).single("image"),
+		uploadFile(fileValidation.image).single("file"),
 		validation(couponValidation.createCouponSchema),
 		couponController.createCoupon,
 	)
@@ -27,7 +27,7 @@ validation(couponValidation.tokenSchema,true),
 		"/:couponId",
 		validation(couponValidation.tokenSchema,true),
 		auth(couponEndPoint.update),
-		uploadFile(fileValidation.image).single("image"),
+		uploadFile(fileValidation.image).single("file"),
 		validation(couponValidation.updateCouponSchema),
 		couponController.updateCoupon,
 	);

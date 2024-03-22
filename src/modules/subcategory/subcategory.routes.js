@@ -13,7 +13,7 @@ router
     "/",
     validation(subCategoryValidation.tokenSchema, true),
     auth(subCategoryEndPoint.create),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(subCategoryValidation.createSubCategorySchema),
     subCategoryController.createSubCategory
   )
@@ -28,7 +28,7 @@ router
     "/:subcategoryId",
     validation(subCategoryValidation.tokenSchema, true),
     auth(subCategoryEndPoint.update),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(subCategoryValidation.updateSubCategorySchema),
     subCategoryController.updateSubCategory
   );
