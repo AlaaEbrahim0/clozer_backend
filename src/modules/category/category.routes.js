@@ -12,34 +12,35 @@ const router = Router();
 // Assuming createCategory is a function in your categoryController
 router.use("/:categoryId/subcategory", subCategoryRoutes);
 router
-	.post(
-		"/",
-		validation(categoryValidation.tokenSchema, true),
-		auth(categoryEndPoint.create),
-		uploadFile(fileValidation.image).single("image"),
-		validation(categoryValidation.createCategorySchema),
-		categoryController.createCategory,
-	)
-	.get(
-		"/",
-		validation(categoryValidation.tokenSchema, true),
-		auth(categoryEndPoint.show),
-		categoryController.allCategory,
-	)
-	.get(
-		"/:categoryId",
-		validation(categoryValidation.tokenSchema, true),
-		auth(categoryEndPoint.show),
-		validation(categoryValidation.getCategorySchema),
-		categoryController.getCategory,
-	)
-	.put(
-		"/:categoryId",
-		validation(categoryValidation.tokenSchema, true),
-		auth(categoryEndPoint.update),
-		uploadFile(fileValidation.image).single("image"),
-		validation(categoryValidation.updateCategorySchema),
-		categoryController.updateCategory,
-	);
+  .post(
+    "/",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.create),
+    uploadFile(fileValidation.image).single("image"),
+    validation(categoryValidation.createCategorySchema),
+    categoryController.createCategory
+  )
+  .get("/subcategories/All", categoryController.getAllSubCategories)
+  .get(
+    "/",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.show),
+    categoryController.allCategory
+  )
+  .get(
+    "/:categoryId",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.show),
+    validation(categoryValidation.getCategorySchema),
+    categoryController.getCategory
+  )
+  .put(
+    "/:categoryId",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.update),
+    uploadFile(fileValidation.image).single("image"),
+    validation(categoryValidation.updateCategorySchema),
+    categoryController.updateCategory
+  );
 
 export default router;

@@ -9,28 +9,28 @@ const router = Router({ mergeParams: true });
 
 // Assuming createCategory is a function in your categoryController
 router
-	.post(
-		"/",
-		validation(subCategoryValidation.tokenSchema, true),
-		auth(subCategoryEndPoint.create),
-		uploadFile(fileValidation.image).single("image"),
-		validation(subCategoryValidation.createSubCategorySchema),
-		subCategoryController.createSubCategory,
-	)
-	.get("/", subCategoryController.allSubCategories)
+  .post(
+    "/",
+    validation(subCategoryValidation.tokenSchema, true),
+    auth(subCategoryEndPoint.create),
+    uploadFile(fileValidation.image).single("image"),
+    validation(subCategoryValidation.createSubCategorySchema),
+    subCategoryController.createSubCategory
+  )
+  .get("/", subCategoryController.allSubCategories)
 
-	.get(
-		"/:subcategoryId",
-		validation(subCategoryValidation.getSubCategorySchema),
-		subCategoryController.getSubCategories,
-	)
-	.put(
-		"/:subcategoryId",
-		validation(subCategoryValidation.tokenSchema, true),
-		auth(subCategoryEndPoint.update),
-		uploadFile(fileValidation.image).single("image"),
-		validation(subCategoryValidation.updateSubCategorySchema),
-		subCategoryController.updateSubCategory,
-	);
+  .get(
+    "/:subcategoryId",
+    validation(subCategoryValidation.getSubCategorySchema),
+    subCategoryController.getSubCategories
+  )
+  .put(
+    "/:subcategoryId",
+    validation(subCategoryValidation.tokenSchema, true),
+    auth(subCategoryEndPoint.update),
+    uploadFile(fileValidation.image).single("image"),
+    validation(subCategoryValidation.updateSubCategorySchema),
+    subCategoryController.updateSubCategory
+  );
 
 export default router;
