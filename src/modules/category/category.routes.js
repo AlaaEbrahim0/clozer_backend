@@ -16,7 +16,7 @@ router
     "/",
     validation(categoryValidation.tokenSchema, true),
     auth(categoryEndPoint.create),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(categoryValidation.createCategorySchema),
     categoryController.createCategory
   )
@@ -38,7 +38,7 @@ router
     "/:categoryId",
     validation(categoryValidation.tokenSchema, true),
     auth(categoryEndPoint.update),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(categoryValidation.updateCategorySchema),
     categoryController.updateCategory
   );

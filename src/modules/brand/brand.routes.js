@@ -13,7 +13,7 @@ router
     "/",
     validation(brandValidation.tokenSchema, true),
     auth(brandEndPoint.create),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(brandValidation.createBrandSchema),
     brandController.createBrand
   )
@@ -27,7 +27,7 @@ router
     "/:brandId",
     validation(brandValidation.tokenSchema, true),
     auth(brandEndPoint.update),
-    uploadFile(fileValidation.image).single("image"),
+    uploadFile(fileValidation.image).single("file"),
     validation(brandValidation.updateBrandSchema),
     brandController.updateBrand
   );
