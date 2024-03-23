@@ -5,7 +5,7 @@ import { asyncHandler } from "../../../utils/errorHandler.js";
 export const addToCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
   const { productId, quantity } = req.body;
-  const cart = await cartModel.findOne({ userId: _id });
+  const cart = await cartModel.find({ userId: _id });
   const product = await productModel.findOne({
     _id: productId,
     isDeleted: false,
@@ -66,28 +66,33 @@ export const addToCart = asyncHandler(async (req, res, next) => {
 export const clearCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
-  const cart = await cartModel.findOne({ userId: _id });
+  let cart = await cartModel.find({ userId: _id });
 
   if (!cart) {
     return next(new Error("Cart Not Found", { cause: 404 }));
   }
 
-  const newCart = await cartModel.findByIdAndUpdate(
-    { _id: cart._id },
+  cart = await cartModel.findByIdAndUpdate(
+    cart._id,
     {
       products: [],
     },
     { new: true }
   );
-  return res.status(200).json({ message: "Done", cart: newCart });
+  return res.status(200).json({ message: "Done", cart: cart });
 });
 export const getCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
-  const cart = await cartModel.findOne({ userId: _id });
+  const cart = await cartModel.find({ userId: _id });
 
   if (!cart) {
-    return next(new Error("Cart Not Found", { cause: 404 }));
+    data = {
+      userId: _id,
+      products: [],
+    };
+
+    cart = await cartModel.create(data);
   }
 
   return res.status(200).json({ message: "Done", cart });
@@ -95,7 +100,7 @@ export const getCart = asyncHandler(async (req, res, next) => {
 export const deleteFromCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
-  const cart = await cartModel.findOne({ userId: _id });
+  const cart = await cartModel.find({ userId: _id });
 
   if (!cart) {
     return next(new Error("Cart Not Found", { cause: 404 }));

@@ -57,17 +57,18 @@ router
   .get(
     "/WishList/get",
     validation(userValidation.tokenSchema, true),
+    auth(userEndPoint.getWishList),
     userController.getUserWishList
   )
   .patch(
     "/addToWishList/:productId",
-    auth(userEndPoint.create),
+    auth(userEndPoint.createtWishList),
     validation(userValidation.userSchema),
     userController.addToWishList
   )
   .patch(
     "/removeFromWishList/:productId",
-    auth(userEndPoint.delete),
+    auth(userEndPoint.updateWishList),
     validation(userValidation.userSchema),
     userController.removeFromWishList
   );

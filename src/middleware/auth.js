@@ -19,27 +19,33 @@ const auth = (role = Object.values) => {
     // if (!token) {
     //   return next(new Error("In_valid token", { cause: 400 }));
     // }
-    const token = authorization.split("Bearer ")[1];
-    const payload = jwt.verify(token, process.env.TOKEN_SIGNATURE);
-    if (!payload?.id) {
-      return next(new Error("Invalid payload", { cause: 400 }));
-    }
-    const authUser = await userModel
-      .findById({ _id: payload.id })
-      .select("userName email role status");
+    try {
+      const token = authorization.split("Bearer ")[1];
+      const payload = jwt.verify(token, process.env.TOKEN_SIGNATURE);
+      if (!payload?.id) {
+        return next(new Error("Invalid payload", { cause: 400 }));
+      }
+      const authUser = await userModel
+        .findById({ _id: payload.id })
+        .select("userName email role status");
 
-    if (!authUser) {
-      return next(new Error("The User Doesn't Exist", { cause: 404 }));
+      if (!authUser) {
+        return next(new Error("The User Doesn't Exist", { cause: 404 }));
+      }
+      if (authUser.status != "Online") {
+        return next(new Error("invalid token please login", { cause: 400 }));
+      }
+      if (roles[authUser.role] === null) {
+        return next(new Error("Not authori  zation", { cause: 401 }));
+      }
+      req.user = authUser;
+      req.userId = payload.id;
+      next();
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        return next(new Error("Expired Token", { cause: 401 }));
+      }
     }
-    if (authUser.status != "Online") {
-      return next(new Error("invalid token please login", { cause: 400 }));
-    }
-    if (roles[authUser.role] === null) {
-      return next(new Error("Not authori  zation", { cause: 401 }));
-    }
-    req.user = authUser;
-    req.userId = payload.id;
-    next();
   };
 };
 export default auth;

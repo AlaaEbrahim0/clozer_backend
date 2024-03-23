@@ -41,6 +41,12 @@ router
     uploadFile(fileValidation.image).single("file"),
     validation(categoryValidation.updateCategorySchema),
     categoryController.updateCategory
+  )
+  .delete(
+    "/:categoryId",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.delete),
+    categoryController.deleteCategory
   );
 
 export default router;

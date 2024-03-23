@@ -9,9 +9,9 @@ export const oneProductSchema = joi
 
 export const createProductSchema = joi
   .object({
-    name: joi.string().max(20).min(2).trim().required(),
-    description: joi.string().max(20).min(2),
-    price: joi.number().positive().min(2).required(), // Change this line
+    name: joi.string().max(100).min(2).trim().required(),
+    description: joi.string().max(1000).min(2).trim(),
+    price: joi.number().positive().required(), // Ch // Change this line
     discount: joi.number().positive(),
     stock: joi.number().positive().min(2).required(), // Assuming stock is numeric
     colors: joi.string(),
@@ -39,9 +39,9 @@ export const createProductSchema = joi
 
 export const updateProductSchema = joi
   .object({
-    name: joi.string().max(20).min(2).trim(),
-    description: joi.string().max(20).min(2),
-    price: joi.number().positive().min(2), // Change this line
+    name: joi.string().max(100).min(2).trim(),
+    description: joi.string().max(1000).min(2).trim(),
+    price: joi.number().positive(), // Change this line
     discount: joi.number().positive(),
     stock: joi.number().positive().min(2), // Assuming stock is numeric
     colors: joi.string(),

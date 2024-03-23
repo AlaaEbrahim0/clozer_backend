@@ -4,6 +4,8 @@ const userEndPoint = {
   create: [roles.Admin],
   update: [roles.Admin],
   delete: [roles.Admin],
-  wishlist: [roles.Admin, roles.User],
+  getWishList: [roles.Admin, roles.User],
+  createtWishList: [roles.Admin, roles.User],
+  updateWishList: [roles.Admin, roles.User],
 };
 export default userEndPoint;
