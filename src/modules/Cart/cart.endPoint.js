@@ -1,7 +1,8 @@
-import { roles } from "../../middleware/auth.js"
+import { roles } from "../../middleware/auth.js";
 
-const cartEndPoint ={
-    create:[roles.User],
-    update:[roles.User],
-}
-export default cartEndPoint
+const cartEndPoint = {
+  create: [roles.User],
+  update: [roles.User],
+  get: [roles.User],
+};
+export default cartEndPoint;

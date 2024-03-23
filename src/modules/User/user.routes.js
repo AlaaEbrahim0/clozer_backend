@@ -54,6 +54,11 @@ router
     auth(userEndPoint.delete),
     userController.deleteAccount
   )
+  .get(
+    "/WishList/get",
+    validation(userValidation.tokenSchema, true),
+    userController.getUserWishList
+  )
   .patch(
     "/addToWishList/:productId",
     auth(userEndPoint.create),

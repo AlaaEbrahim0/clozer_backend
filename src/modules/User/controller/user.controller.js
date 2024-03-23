@@ -113,6 +113,15 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
   return res.status(200).json({ message: "Success", users });
 });
 
+export const getUserWishList = asyncHandler(async (req, res, next) => {
+  // Change from req.params to req.query
+  const { _id } = req.user;
+  // Query the users
+  const user = await userModel.findById(_id);
+
+  return res.status(200).json({ message: "Success", wishList: user.wishList });
+});
+
 //Delete account
 export const deleteAccount = asyncHandler(async (req, res, next) => {
   // Get the user ID and role from the authenticated user
