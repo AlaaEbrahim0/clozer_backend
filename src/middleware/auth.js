@@ -36,7 +36,7 @@ const auth = (role = Object.values) => {
         return next(new Error("invalid token please login", { cause: 400 }));
       }
       if (roles[authUser.role] === null) {
-        return next(new Error("Not authori  zation", { cause: 401 }));
+        return next(new Error("Not authorized", { cause: 401 }));
       }
       req.user = authUser;
       req.userId = payload.id;

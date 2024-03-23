@@ -30,6 +30,12 @@ router
     uploadFile(fileValidation.image).single("file"),
     validation(brandValidation.updateBrandSchema),
     brandController.updateBrand
+  )
+  .delete(
+    "/:brandId",
+    validation(brandValidation.tokenSchema, true),
+    auth(brandEndPoint.update),
+    brandController.deleteBrand
   );
 
 export default router;
