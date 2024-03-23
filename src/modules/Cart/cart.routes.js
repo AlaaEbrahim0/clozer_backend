@@ -42,6 +42,7 @@ router
     validation(cartValidation.deleteFromSchema),
     auth(cartEndPoint.create),
     cartController.deleteFromCart
-  );
+  )
+  .post("/fix/cart", cartController.fixCart);
 
 export default router;

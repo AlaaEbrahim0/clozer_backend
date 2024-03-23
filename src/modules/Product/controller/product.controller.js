@@ -246,3 +246,44 @@ export const deleteProduct = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ message: "Product deleted successfully" });
 });
+
+export const getProductsByIds = asyncHandler(async (req, res, next) => {
+  const { productIds } = req.query;
+  const products = await productModel
+    .find({ _id: { $in: productIds } })
+    .populate({
+      path: "categoryId",
+      select: "name",
+    })
+    .populate("subCategoryId", "name")
+    .populate("brandId");
+  return res.status(200).json({ message: "Done", products });
+});
+
+export const getProductsBySubCategoryId = asyncHandler(
+  async (req, res, next) => {
+    const { subCategoryId } = req.params;
+    const products = await productModel
+      .find({ subCategoryId: subCategoryId })
+      .populate({
+        path: "categoryId",
+        select: "name",
+      })
+      .populate("subCategoryId", "name")
+      .populate("brandId");
+    return res.status(200).json({ message: "Done", products });
+  }
+);
+
+export const getProductsByCategoryId = asyncHandler(async (req, res, next) => {
+  const { categoryId } = req.params;
+  const products = await productModel
+    .find({ categoryId: categoryId })
+    .populate({
+      path: "categoryId",
+      select: "name",
+    })
+    .populate("subCategoryId", "name")
+    .populate("brandId");
+  return res.status(200).json({ message: "Done", products });
+});

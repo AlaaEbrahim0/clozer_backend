@@ -183,3 +183,16 @@ export const removeFromWishList = asyncHandler(async (req, res, next) => {
     ]);
   return res.status(200).json({ message: "remove to Wishlist", user });
 });
+
+export const fixWishlist = asyncHandler(async (req, res, next) => {
+  const cart = await userModel.find();
+
+  if (!cart) {
+    return next(new Error("Cart Not Found", { cause: 404 }));
+  }
+  cart.forEach(async (element) => {
+    await userModel.findByIdAndDelete(element._id);
+  });
+
+  return res.status(200).json({ message: "Done" });
+});

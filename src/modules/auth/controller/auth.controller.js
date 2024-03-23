@@ -104,23 +104,29 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
     token,
     signature: process.env.SIGN_UP_SIGNATURE,
   });
-
+  //need to add the correct base url
+  const baseUrl = process.env.ADMIN_BASE_URL;
   if (!email) {
-    return res.redirect("https://www.google.com.eg/?hl=ar");
+    return res.redirect(path.join(baseUrl, "/auth/login"));
   }
 
   const user = await userModel.findOne({ email });
 
   if (!user) {
-    return res.redirect("https://www.google.com.eg/?hl=ar");
+    req.session.redirectMessage = "user not found";
+    return res.redirect(path.join(baseUrl, "/auth/login"));
   }
 
   if (user.confirmEmail) {
-    return res.redirect("https://www.youtube.com/");
+    req.session.redirectMessage = "email already confirmed";
+
+    return res.redirect(path.join(baseUrl, "/auth/login"));
   }
 
   await userModel.updateOne({ email }, { confirmEmail: true });
-  return res.redirect("https://www.youtube.com/");
+  req.session.redirectMessage = "email confirmed";
+
+  return res.redirect(path.join(baseUrl, "/auth/login"));
 });
 
 /*
