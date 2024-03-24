@@ -189,7 +189,7 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
         return next(new Error("Order not found", { cause: 404 }));
     }
     const allowedStatuses = ["placed", "waitForPayment", "onway"];
-    if (!allowStatuses.includes(order.status)) {
+    if (!allowedStatuses.includes(order.status)) {
         // Assuming orders can only be cancelled if they are pending
         return next(new Error("Order cannot be cancelled", { cause: 400 }));
     }
