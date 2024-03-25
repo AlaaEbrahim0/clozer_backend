@@ -21,6 +21,12 @@ router
     categoryController.createCategory
   )
   .get("/subcategories/All", categoryController.getAllSubCategories)
+  .delete(
+    "/subcategories/delete/:subcategoryId",
+    validation(categoryValidation.tokenSchema, true),
+    auth(categoryEndPoint.create),
+    categoryController.deleteSubCategory
+  )
   .get(
     "/",
     validation(categoryValidation.tokenSchema, true),

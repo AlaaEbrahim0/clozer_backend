@@ -100,3 +100,13 @@ export const deleteCategory = asyncHandler(async (req, res, next) => {
   await categoryModel.findByIdAndDelete(categoryId);
   return res.status(200).json({ message: "Done" });
 });
+
+export const deleteSubCategory = asyncHandler(async (req, res, next) => {
+  const { subcategoryId } = req.params;
+  const category = await subCategoryModel.findById({ _id: subcategoryId });
+  if (!category) {
+    return next(new Error("SubCategory Not Found", { cause: 404 }));
+  }
+  await subCategoryModel.findByIdAndDelete(subcategoryId);
+  return res.status(200).json({ message: "Done" });
+});
