@@ -19,7 +19,7 @@ router
     )
     .get("/", couponController.allCoupon)
     .get(
-        "/getById/:couponName",
+        "/getByName/:couponName",
         validation(couponValidation.getCouponByNameSchema),
         couponController.getCouponByName
     )
