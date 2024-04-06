@@ -9,7 +9,7 @@ export const getCouponSchema = joi
 
 export const getCouponByNameSchema = joi
     .object({
-        couponName: joi.string().max(20).min(6).trim().required(),
+        couponName: joi.string().max(20).min(3).trim().required(),
     })
     .required();
 
