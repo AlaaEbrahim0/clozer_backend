@@ -79,7 +79,7 @@ export const getProduct = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
 
   const product = await productModel
-    .findById({ _id: productId })
+    .findById({ _id: productId, isDeleted: false })
     .populate({
       path: "categoryId",
       select: "name",
@@ -96,7 +96,7 @@ export const getProduct = asyncHandler(async (req, res, next) => {
 //allProducts
 export const allProducts = asyncHandler(async (req, res, next) => {
   const products = await productModel
-    .find()
+    .find({ isDeleted: false })
     .populate({
       path: "categoryId",
       select: "name",

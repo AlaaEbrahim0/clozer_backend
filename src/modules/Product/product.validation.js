@@ -23,11 +23,7 @@ export const createProductSchema = joi
           .items(generalFields.file.required())
           .length(1)
           .required(),
-        subImage: joi
-          .array()
-          .items(generalFields.file.required())
-          .min(1)
-          .max(5),
+        subImage: joi.array().items(generalFields.file).min(1).max(5),
       })
       .required(),
 
@@ -48,7 +44,7 @@ export const updateProductSchema = joi
     size: joi.string(),
     files: joi.object({
       mainImage: joi.array().items(generalFields.file.required()).length(1),
-      subImage: joi.array().items(generalFields.file.required()).min(1).max(5),
+      subImage: joi.array().items(generalFields.file).min(1).max(5),
     }),
 
     productId: generalFields.id,
