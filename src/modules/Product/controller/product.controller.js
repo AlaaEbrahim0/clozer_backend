@@ -52,7 +52,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     req.body.size = req.body.size.split(",");
   }
 
-  if (req.files.subImage.length) {
+  if (req.files.subImage && req.files.subImage.length) {
     let images = [];
     for (const image of req.files.subImage) {
       const { secure_url, public_id } = await cloudinary.uploader.upload(
@@ -174,7 +174,7 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
     req.body.mainImage = { public_id, secure_url };
   }
 
-  if (req.files?.subImage?.length) {
+  if (req.files.subImage && req.files?.subImage?.length) {
     let subImages = [];
     for (const image of req.files.subImage) {
       const { secure_url, public_id } = await cloudinary.uploader.upload(
