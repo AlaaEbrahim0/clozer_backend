@@ -148,14 +148,16 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
     req.body.size = req.body.size.split(",");
   }
 
-  req.body.finalPrice =
-    req.body.price ||
-    product.price -
-      (req.body.price ||
-        product.price * req.body.discount ||
-        product.discount ||
-        0) /
-        100;
+  // req.body.finalPrice =
+  //   req.body.price ||
+  //   product.price -
+  //     (req.body.price ||
+  //       product.price * req.body.discount ||
+  //       product.discount ||
+  //       0) /
+  //       100;
+
+  req.body.finalPrice= req.body.price-(req.body.price * req.body.discount )/100
   // if(req.mainImage)
   // {
 

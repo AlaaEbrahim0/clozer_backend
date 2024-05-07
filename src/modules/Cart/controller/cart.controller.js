@@ -179,3 +179,38 @@ export const fixCart = asyncHandler(async (req, res, next) => {
 
 //     return res.status(200).json({ message: "Product added to cart", cart: updatedCart });
 // });
+
+export const updateQuantity = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+  const { quantity } = req.body;
+  const {productId}=req.params
+
+  // Find the cart for the user
+  let cart = await cartModel.findOne({ userId: _id });
+
+  // Find the product to add to the cart
+  const product = await productModel.findOne({
+    _id: productId,
+    isDeleted: false,
+    stock: { $gte: quantity },
+  });
+
+  // If the product doesn't have enough quatity, return an error
+  if (!product) {
+    return next(new Error("No Enough Quantity", { cause: 404 }));
+  }
+
+
+  // Check if the product already exists in the cart
+  const existingProduct = cart.products.find(
+    (p) => p.productId.toString() === productId
+  );
+
+  // If the product exists in the cart, update the quantity
+  if (existingProduct) {
+    existingProduct.quantity = req.body.quantity;
+    await cart.save();
+    return res.status(200).json({ message: "Done", cart });
+  }
+
+});

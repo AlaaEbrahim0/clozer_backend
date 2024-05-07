@@ -43,6 +43,19 @@ router
     auth(cartEndPoint.create),
     cartController.deleteFromCart
   )
-  .post("/fix/cart", cartController.fixCart);
+  .post(
+    "/fix/cart", 
+    cartController.fixCart
+  )
+  .patch(
+    "/updateQuantity:productId",
+    auth(cartEndPoint.update),
+    cartController.updateQuantity
+  )
+  .patch(
+    "/updateQuantity/:productId",
+    auth(cartEndPoint.update),
+    cartController.updateQuantity
+  )
 
 export default router;
