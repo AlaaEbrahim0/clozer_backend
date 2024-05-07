@@ -99,6 +99,41 @@ export const logIn = asyncHandler(async (req, res, next) => {
     await userModel.updateMany({ email }, { status: "Online" });
     return res.json({ message: "Done", token, rf_token });
 });
+
+
+export const logInAdmin = asyncHandler(async (req, res, next) => {
+    const { email, password } = req.body;
+    const emailExists = await userModel.findOne({ email });
+    if (!emailExists) {
+        return next(new Error("Email or password not valid", { cause: 400 }));
+    }
+
+    if (emailExists.role=='User') {
+        return next(new Error("Email or password not valid", { cause: 400 }));
+    }
+
+
+    if (
+        !comparePassword({
+            plaintext: password,
+            hashValue: emailExists.password,
+        })
+    ) {
+        return next(new Error("Email or password not valid", { cause: 400 }));
+    }
+    const token = generateToken({
+        payload: { email, id: emailExists._id, name: emailExists.userName },
+        signature: process.env.TOKEN_SIGNATURE,
+        expiresIn: 60 * 60 * 30,
+    });
+    const rf_token = generateToken({
+        payload: { email, id: emailExists._id, name: emailExists.userName },
+        signature: process.env.TOKEN_SIGNATURE,
+        expiresIn: 60 * 60 * 24 * 30,
+    });
+    await userModel.updateMany({ email }, { status: "Online" });
+    return res.json({ message: "Done", token, rf_token });
+});
 /*
 1-get token from params
 2-verify token

@@ -14,6 +14,11 @@ router
 		 validation(authValidation.logInSchema),
 		  authController.logIn
 		  )
+	.post(
+		"/logInAdmin",
+		validation(authValidation.logInSchema),
+		 authController.logInAdmin
+		)	 	  
 	.get(
 		"/confirmEmail/:token",
 		 authController.confirmEmail)
