@@ -54,6 +54,11 @@ const userSchema=new Schema({
     address:String,
     profileImage:Object,
     coverImage:[String],
+    provider:{
+        type:String,
+        enum:["Google","System"],
+        default:"System"
+    },
     DOB:{
         type: Date,
     },

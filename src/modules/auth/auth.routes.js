@@ -28,6 +28,8 @@ router
 		"/forgetPassword/:email",
 		validation(authValidation.forgetPasswordSchema),
 		authController.forgetPassword,
-	);
+	)
+	.post('/loginWithGmail',authController.loginWithGmail)
+	;
 
 export default router;

@@ -34,4 +34,4 @@ dotenv.config({ path: path.resolve("./.env") });
 const port = +process.env.PORT;
 bootstrap(app, express);
 
-app.listen(port, () => console.log(`E_Commerce listening on port ${port}!`));
+app.listen(port, () => console.log(`Clozer listening on port ${port}!`));

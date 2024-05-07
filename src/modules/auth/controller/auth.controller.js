@@ -9,7 +9,9 @@ import {
     comparePassword,
     hashPassword,
 } from "../../../utils/hashAndCompare.js";
-import { customAlphabet } from "nanoid";
+import { customAlphabet, nanoid } from "nanoid";
+import {OAuth2Client} from 'google-auth-library';
+
 
 /* create signup contain 
 gain data ,
@@ -72,6 +74,10 @@ export const logIn = asyncHandler(async (req, res, next) => {
     if (!emailExists.confirmEmail) {
         return next(new Error("please confirm email first", { cause: 400 }));
     }
+    if (emailExists.provider && emailExists.provider !="System") {
+        return next(new Error("invalid provider please login with gmail", { cause: 400 }));
+    }
+
     if (
         !comparePassword({
             plaintext: password,
@@ -107,29 +113,31 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
         token,
         signature: process.env.SIGN_UP_SIGNATURE,
     });
-    //need to add the correct base url
-    const baseUrl = process.env.ADMIN_BASE_URL;
+
+    // Check if email is present in the token
     if (!email) {
-        return res.redirect(path.join(baseUrl, "/auth/login"));
+        return res.redirect(`${process.env.ADMIN_BASE_URL}/auth/login?message=Email%20not%20found%20in%20token`);
     }
 
+    // Find user by email
     const user = await userModel.findOne({ email });
 
+    // If user not found, redirect with message
     if (!user) {
-        req.session.redirectMessage = "user not found";
-        return res.redirect(path.join(baseUrl, "/auth/login"));
+        return res.redirect(`${process.env.ADMIN_BASE_URL}/auth/login?message=User%20not%20found`);
     }
 
+    // If email already confirmed, redirect with message
     if (user.confirmEmail) {
-        req.session.redirectMessage = "email already confirmed";
-
-        return res.redirect(path.join(baseUrl, "/auth/login"));
+        return res.redirect(`${process.env.ADMIN_BASE_URL}/auth/login?message=Email%20already%20confirmed`);
     }
 
+    // Update user's confirmEmail status
     await userModel.updateOne({ email }, { confirmEmail: true });
-    req.session.redirectMessage = "email confirmed";
 
-    return res.redirect(path.join(baseUrl, "/auth/login"));
+    // Redirect with confirmation message
+    return res.redirect(`${process.env.ADMIN_BASE_URL}/auth/login?message=Email%20confirmed`);
+
 });
 
 /*
@@ -147,14 +155,14 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
         signature: process.env.SIGN_UP_SIGNATURE,
     });
     if (!email) {
-        return res.redirect("https://www.google.com.eg/?hl=ar");
+        return res.redirect("http://localhost:3000/EcommercReactProject#/register");
     }
     const user = await userModel.findOne({ email });
     if (!user) {
-        return res.redirect("https://www.google.com.eg/?hl=ar");
+        return res.redirect("http://localhost:3000/EcommercReactProject#/register");
     }
     if (user.confirmEmail) {
-        return res.redirect("https://www.youtube.com/");
+        return res.redirect("http://localhost:3000/EcommercReactProject#/register");
     }
     const newToken = generateToken({
         payload: { email },
@@ -164,8 +172,8 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
     const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
     const html = `
     <a href ='${link}'>confirm email</a>
-    <br/>
-    `;
+    <br/>`
+    ;
     if (!sendEmail({ to: email, subject: "confirm Email", html })) {
         return next(new Error("Invalid Email", { cause: 404 })); //redirect to front
     }
@@ -233,3 +241,61 @@ export const forgetPassword = asyncHandler(async (req, res, next) => {
     );
     return res.status(200).json({ message: "Done" });
 });
+
+export const loginWithGmail=asyncHandler(async(req,res,next)=>{
+const {idToken}=req.body
+const client = new OAuth2Client();
+async function verify() {
+  const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+      // Or, if multiple clients access the backend:
+      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+  });
+  const payload = ticket.getPayload();
+  return payload
+}
+const {email,name,email_verified,picture}=await verify();
+const user =await userModel.findOne({email})
+//login
+if(user){
+    if(user.provider !="Google"){
+        return next(new Error("invalid provider please login with gmail", { cause: 400 }));
+    }
+    await userModel.updateMany({ email }, { status: "Online" });
+    const token = generateToken({
+        payload: { email, id: user._id},
+        signature: process.env.TOKEN_SIGNATURE,
+        expiresIn: 60 * 60 * 30,
+    });
+    const rf_token = generateToken({
+        payload: { email, id: user._id },
+        signature: process.env.TOKEN_SIGNATURE,
+        expiresIn: 60 * 60 * 24 * 30,
+    });
+    return res.status(200).json({ message: "Done", token , rf_token });
+}
+//signUp
+const newUser=await userModel.create({
+    email,
+    userName:name,
+    confirmEmail:email_verified,
+    provider:"Google",
+    profileImage:{
+        secure_url:picture
+    },
+    status:"Online",
+    password:nanoid(6)
+})
+const token = generateToken({
+    payload: { email, id: newUser._id},
+    signature: process.env.TOKEN_SIGNATURE,
+    expiresIn: 60 * 60 * 30,
+});
+const rf_token = generateToken({
+    payload: { email, id: newUser._id },
+    signature: process.env.TOKEN_SIGNATURE,
+    expiresIn: 60 * 60 * 24 * 30,
+});
+return res.status(201).json({ message: "Done", token, rf_token });
+})

@@ -84,16 +84,15 @@ export const clearCart = asyncHandler(async (req, res, next) => {
 export const getCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
-  let cart = await cartModel.findOne({ userId: _id });
+  const cart = await cartModel.findOne({ userId: _id });
 
   if (!cart || cart.length === 0) {
-     cart = {
+    let data = {
       userId: _id,
       products: [],
     };
 
-    await cartModel.create(cart);
-   // cart = data;
+    await cartModel.create(data);
   }
 
   return res.status(200).json({ message: "Done", cart });
@@ -101,17 +100,15 @@ export const getCart = asyncHandler(async (req, res, next) => {
 export const deleteFromCart = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
-  let cart = await cartModel.findOne({ userId: _id });
-  
+  const cart = await cartModel.findOne({ userId: _id });
 
   if (!cart) {
     return next(new Error("Cart Not Found", { cause: 404 }));
   }
-  
+
   const newCart = await cartModel.findByIdAndUpdate(
     { _id: cart._id },
     {
-      //userId: _id,
       $pull: {
         products: {
           productId: { $in: req.params.productId },
@@ -120,7 +117,7 @@ export const deleteFromCart = asyncHandler(async (req, res, next) => {
     },
     { new: true }
   );
-  return res.status(200).json({ message: "Done", cart :newCart });
+  return res.status(200).json({ message: "Done", cart: newCart });
 });
 
 export const fixCart = asyncHandler(async (req, res, next) => {

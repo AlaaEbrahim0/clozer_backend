@@ -13,12 +13,12 @@ const cartSchema = new Schema(
       {
         productId: {
           type: Types.ObjectId,
-        //  required: true,
+          required: true,
           ref: "Product",
         },
         quantity: {
           type: Number,
-          //required: true,
+          required: true,
           min: 1,
         },
       },
